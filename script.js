@@ -58,9 +58,12 @@ const postServer = createServer(async (req, res) => {
       body += chunk.toString();
     });
     //on request end, parse the body
+
     req.on("end", async () => {
+      console.log("received body", body);
       try {
         const parsedBody = JSON.parse(body);
+
         //connect to db
         const client = new MongoClient(uri, {
           serverApi: {
@@ -81,19 +84,19 @@ const postServer = createServer(async (req, res) => {
         await client.close(); //ask
 
         //give the 201 code message and respond with the id of the inserted destination
-        res.writeHead(201);
+        res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify(result));
         // console.log("result", result);
       } catch (err) {
         //generic error assuming you wrote json wrong
         console.error("Invalid JSON");
-        res.writeHead(400);
+        res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: "Invalid JSON" }));
       }
     });
   } else {
     //any other request that is not a post will not be accepted
-    res.writeHead(405); // Method not allowed if it's not a POST request
+    res.writeHead(405, { "Content-Type": "application/json" }); // Method not allowed if it's not a POST request
     res.end("Only POST requests are allowed\n");
   }
 });
@@ -101,3 +104,5 @@ const postServer = createServer(async (req, res) => {
 postServer.listen(3001, "127.0.0.1", () => {
   console.log("Listening on 127.0.0.1:3001");
 });
+
+//const functionName =()=>{}
