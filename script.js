@@ -81,7 +81,7 @@ const postServer = createServer(async (req, res) => {
         //insert into db in the specified collection
         const result = await destinations.insertOne(parsedBody);
 
-        await client.close(); //ask
+        await client.close(); //ask why we need to close it?
 
         //give the 201 code message and respond with the id of the inserted destination
         res.writeHead(201, { "Content-Type": "application/json" });
@@ -104,5 +104,3 @@ const postServer = createServer(async (req, res) => {
 postServer.listen(3001, "127.0.0.1", () => {
   console.log("Listening on 127.0.0.1:3001");
 });
-
-//const functionName =()=>{}
